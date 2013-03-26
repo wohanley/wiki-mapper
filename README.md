@@ -4,7 +4,7 @@ wiki-mapper
 Parses a standard Wikipedia list article, presuming a list of locations, and adds those locations to a KML map file.
 
 Google Maps
-===========
+-----------
 
 Importing KML files into Google Maps generally doesn't work all that well. 
 If you want to do such a thing (and why not!), it works much more reliably
