@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup
 import re
 import os
 import sys
-from googlemaps import GoogleMaps
-from googlemaps import GoogleMapsError
+from pygeocoder import Geocoder
+from pygeocoder import GeocoderError
 from pykml.factory import KML_ElementMaker as kml
 from lxml import etree
 import unicodedata
@@ -27,10 +27,9 @@ for item in html.select('h3 span.mw-headline'):
     text = ''.join(header.next_sibling.next_sibling.find_all(text=True))
     text = re.sub(r'\[.*\]', '', text)
     text = os.linesep.join([s for s in text.splitlines() if s])
-    print(header)
     locations.append((header.contents[2].string, text))
 
-maps = GoogleMaps(args.gm_api_key)
+#maps = GoogleMaps(args.gm_api_key)
 
 doc = kml.kml(
     kml.Document(
@@ -47,7 +46,9 @@ doc = kml.kml(
 
 for location in locations:
     try:
-        coordinates = maps.address_to_latlng(unicodedata.normalize('NFKD', location[0]).encode('ascii','ignore'))
+        #coordinates = Geocoder.geocode(unicodedata.normalize('NFKD', location[0]).encode('ascii','ignore'))
+        coordinates = Geocoder.geocode(unicodedata.normalize('NFKD', location[0]).encode('ascii', 'ignore')).coordinates
+        print(coordinates)
         doc.Document.append(kml.Placemark(
             kml.name(location[0]),
             kml.description(location[1]),
@@ -55,8 +56,8 @@ for location in locations:
                 kml.coordinates(','.join(format(x, "3.6f") for x in [coordinates[1], coordinates[0], 0]))
             )
         ))
-    except GoogleMapsError as gme:
-        sys.stderr.write(str(gme.message) + " on " + str(location[0].encode('ascii', 'replace')) + '\n')
+    except GeocoderError as ge:
+        sys.stderr.write(str(ge.message) + " on " + str(location[0].encode('ascii', 'replace')) + '\n')
     except TypeError as te:
         if location[0]:
             sys.stderr.write(str(te.message) + " on " + str(location[0].encode('ascii', 'replace')) + '\n')
