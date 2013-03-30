@@ -13,6 +13,7 @@ import unicodedata
 parser = argparse.ArgumentParser(description="Generates a KML map file from a Wikipedia list article.")
 parser.add_argument('source_url')
 parser.add_argument('gm_api_key')
+parser.add_argument('-t', '--title', default='My map')
 parser.add_argument('-o', '--out', default='map.kml')
 args = parser.parse_args()
 
@@ -33,7 +34,7 @@ for item in html.select('h3 span.mw-headline'):
 
 doc = kml.kml(
     kml.Document(
-        kml.name("Berlin Wall Segments"),
+        kml.name(args.title),
         kml.Style(
             kml.IconStyle(
                 kml.Icon(
