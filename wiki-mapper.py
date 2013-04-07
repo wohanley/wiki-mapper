@@ -30,8 +30,6 @@ for item in html.select('h3 span.mw-headline'):
     text = os.linesep.join([s for s in text.splitlines() if s])
     locations.append((header.contents[2].string, text))
 
-#maps = GoogleMaps(args.gm_api_key)
-
 doc = kml.kml(
     kml.Document(
         kml.name(args.title),
@@ -47,7 +45,6 @@ doc = kml.kml(
 
 for location in locations:
     try:
-        #coordinates = Geocoder.geocode(unicodedata.normalize('NFKD', location[0]).encode('ascii','ignore'))
         coordinates = Geocoder.geocode(unicodedata.normalize('NFKD', location[0]).encode('ascii', 'ignore')).coordinates
         print(coordinates)
         doc.Document.append(kml.Placemark(
